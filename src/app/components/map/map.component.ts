@@ -5,18 +5,18 @@ import { ParcelService } from '../../services/parcel.service';
 @Component({
   selector: 'app-map',
   standalone: true,
-  template: '<div id="map" style="height:500px; width:100%;"></div>',
+  template: '<div id="map" style="height:100%; width:100%;"></div>',
   styles: [`
     #map {
       width: 100%;
-      height: 500px;
-      border-radius: 8px;
-      box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+      height: 100%;
+      border-radius: 0;
     }
   `]
 })
 export class MapComponent implements OnInit {
   private map: any;
+  private markers: { [key: string]: any } = {};
 
   constructor(
     private parcelService: ParcelService,
@@ -26,7 +26,6 @@ export class MapComponent implements OnInit {
   ngOnInit() {
     if (isPlatformBrowser(this.platformId)) {
       this.initMap();
-      this.loadParcels();
     }
   }
 
@@ -38,18 +37,28 @@ export class MapComponent implements OnInit {
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '© OpenStreetMap'
     }).addTo(this.map);
+
+    this.loadParcels();
   }
 
   private async loadParcels() {
     const L = await import('leaflet');
 
-    this.parcelService.getNearbyParcels().subscribe((data: any[]) => {
-      data.forEach(parcel => {
-        const [lng, lat] = parcel.currentLocation.coordinates;
+    this.parcelService.getNearbyParcels().subscribe((data: any) => {
+      const parcels = Array.isArray(data) ? data : [data];
+      parcels.forEach(parcel => {
+        if (parcel.currentLocation && parcel.currentLocation.coordinates) {
+          const [lng, lat] = parcel.currentLocation.coordinates;
+          const id = parcel.parcelId;
 
-        L.marker([lat, lng])
-          .addTo(this.map)
-          .bindPopup(`Parcel: ${parcel.parcelId}`);
+          if (this.markers[id]) {
+            this.markers[id].setLatLng([lat, lng]);
+          } else {
+            this.markers[id] = L.marker([lat, lng])
+              .addTo(this.map)
+              .bindPopup(`📦 ${id}`);
+          }
+        }
       });
     });
   }

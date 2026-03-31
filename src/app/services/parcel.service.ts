@@ -1,21 +1,14 @@
-import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Injectable } from '@angular/core';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable({ providedIn: 'root' })
 export class ParcelService {
-  private apiUrl = 'http://localhost:8080/api/parcels';
+
+  private apiUrl = 'http://localhost:8080/api/parcels/nearby';
 
   constructor(private http: HttpClient) { }
 
-  getNearbyParcels(lng: number = 77.5946, lat: number = 12.9716): Observable<any[]> {
-    return this.http.get<any[]>(`${this.apiUrl}/nearby`, {
-      params: {
-        lng: lng.toString(),
-        lat: lat.toString()
-      }
-    });
+  getNearbyParcels() {
+    return this.http.get(`${this.apiUrl}?lat=12.9716&lng=77.5946`);
   }
 }

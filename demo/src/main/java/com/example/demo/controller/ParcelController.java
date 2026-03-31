@@ -9,7 +9,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/parcels")
-@CrossOrigin
+@CrossOrigin(origins = "http://localhost:4200")
 public class ParcelController {
 
     @Autowired

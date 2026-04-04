@@ -30,6 +30,7 @@ public class LocationSimulator {
             Map<String, Object> data = new HashMap<>();
             data.put("parcelId", id);
             data.put("coordinates", new double[] { lng, lat });
+            data.put("timestamp", System.currentTimeMillis());
 
             template.convertAndSend("/topic/locations", data);
         }

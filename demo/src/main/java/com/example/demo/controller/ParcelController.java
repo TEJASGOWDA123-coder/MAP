@@ -9,7 +9,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/parcels")
-@CrossOrigin(origins = "http://localhost:4200")
+@CrossOrigin(origins = { "http://localhost:4200", "http://localhost:5173", "http://localhost:5174" })
 public class ParcelController {
 
     @Autowired
@@ -18,8 +18,9 @@ public class ParcelController {
     @GetMapping("/nearby")
     public List<Parcel> getNearbyParcels(
             @RequestParam double lng,
-            @RequestParam double lat) {
+            @RequestParam double lat,
+            @RequestParam(defaultValue = "5.0") double distance) {
 
-        return service.getNearbyParcels(lng, lat);
+        return service.getNearbyParcels(lng, lat, distance);
     }
 }

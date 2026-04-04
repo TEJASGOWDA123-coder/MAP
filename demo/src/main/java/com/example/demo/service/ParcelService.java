@@ -15,6 +15,11 @@ import java.util.List;
 public class ParcelService {
 
     private final ParcelRepository parcelRepository;
+    private final com.example.demo.repository.RouteLogRepository routeLogRepository;
+
+    public List<com.example.demo.model.RouteLog> getParcelHistory(String parcelId) {
+        return routeLogRepository.findByParcelIdOrderByTimestampDesc(parcelId);
+    }
 
     public List<Parcel> getNearbyParcels(double longitude, double latitude) {
         return getNearbyParcels(longitude, latitude, 10.0); // 10km

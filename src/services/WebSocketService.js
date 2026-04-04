@@ -8,7 +8,9 @@ class WebSocketService {
     }
 
     connect() {
-        const socket = new SockJS('http://localhost:8080/ws');
+        const protocol = window.location.protocol === 'https:' ? 'https:' : 'http:';
+        const host = window.location.hostname === 'localhost' ? 'localhost:8080' : window.location.host;
+        const socket = new SockJS(`${protocol}//${host}/ws`);
         this.client = new Client({
             webSocketFactory: () => socket,
             debug: (str) => {

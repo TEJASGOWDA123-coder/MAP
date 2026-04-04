@@ -15,6 +15,11 @@ public class ParcelController {
     @Autowired
     private ParcelService service;
 
+    @GetMapping("/{id}/history")
+    public List<com.example.demo.model.RouteLog> getParcelHistory(@PathVariable String id) {
+        return service.getParcelHistory(id);
+    }
+
     @GetMapping("/nearby")
     public List<Parcel> getNearbyParcels(
             @RequestParam double lng,

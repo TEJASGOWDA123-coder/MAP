@@ -93,63 +93,13 @@
       <!-- Regional Breakthrough & Risk -->
       <div class="secondary-grid">
         <!-- Risk Forecast Widget -->
-        <div class="risk-card glass-panel">
-          <div class="card-head">
-            <h3>Predictive Risk Forecasting</h3>
-            <p class="subtitle">High-risk routes identified by AI</p>
-          </div>
-          <div class="risk-list">
-            <div v-for="r in riskRoutes" :key="r.id" class="risk-item">
-              <div class="risk-header">
-                <span class="risk-id">Route #{{ r.id }}</span>
-                <span class="risk-level" :class="r.risk.toLowerCase()">{{ r.risk }} Risk</span>
-              </div>
-              <div class="risk-meta">
-                <span>{{ r.factor }}</span>
-                <span class="risk-change">{{ r.change }}</span>
-              </div>
-            </div>
-          </div>
-        </div>
+        <PredictiveRisk />
 
         <!-- ESG Sustainability Tracker -->
-        <div class="esg-card glass-panel">
-          <h3>ESG Sustainability Tracker</h3>
-          <div class="esg-grid">
-             <div v-for="e in esgMetrics" :key="e.label" class="esg-item">
-               <span class="esg-icon">{{ e.icon }}</span>
-               <div class="esg-info">
-                 <span class="esg-val">{{ e.value }}</span>
-                 <span class="esg-label">{{ e.label }}</span>
-               </div>
-               <span class="esg-trend">{{ e.trend }}</span>
-             </div>
-          </div>
-        </div>
+        <ESGTracker />
 
-        <!-- Regional Heatmap (Moved Here) -->
-        <div class="regional-card glass-panel">
-          <div class="card-head">
-            <h3>Regional Throughput</h3>
-            <button class="more-btn">•••</button>
-          </div>
-          <div class="region-stats">
-            <div v-for="r in regions" :key="r.name" class="region-row-enhanced">
-              <div class="r-visual" :style="{ background: `rgba(59, 130, 246, ${r.heat})` }">
-                 <span>{{ Math.round(r.heat * 100) }}%</span>
-              </div>
-              <div class="r-info-enhanced">
-                <div class="r-top">
-                  <span class="r-name">{{ r.name }}</span>
-                  <span class="r-vol">{{ r.count }}k</span>
-                </div>
-                <div class="r-bar-wrap-enhanced">
-                  <div class="r-bar-enhanced" :style="{ width: r.vol + '%', background: r.color }"></div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+        <!-- Regional Throughput -->
+        <RegionalThroughput />
       </div>
     </div>
   </div>
@@ -157,6 +107,9 @@
 
 <script setup>
 import { ref } from 'vue';
+import PredictiveRisk from './PredictiveRisk.vue';
+import ESGTracker from './ESGTracker.vue';
+import RegionalThroughput from './RegionalThroughput.vue';
 
 const volumeTrend = ref([
   { day: 'Mon', actual: 40, predicted: 42 },

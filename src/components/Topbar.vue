@@ -1,6 +1,18 @@
 <script setup>
+import { computed } from 'vue';
 defineEmits(['show-notifications', 'show-profile']);
+
+const formattedDate = computed(() => {
+  const now = new Date();
+  const options = { day: '2-digit', month: 'short', year: 'numeric' };
+  const dateStr = now.toLocaleDateString('en-GB', options);
+  // dateStr is like "12 Apr 2026"
+  // We want "Today, 12 Apr, 2026"
+  const parts = dateStr.split(' ');
+  return `Today, ${parts[0]} ${parts[1]}, ${parts[2]}`;
+});
 </script>
+
 
 <template>
   <header class="topbar">
@@ -16,7 +28,7 @@ defineEmits(['show-notifications', 'show-profile']);
 
     <div class="actions">
       <div class="date-picker glass-panel">
-        📅 Today, 15 Sep, 2025
+        📅 {{ formattedDate }}
       </div>
       <div class="notification-btn glass-panel" @click="$emit('show-notifications')">
         🔔

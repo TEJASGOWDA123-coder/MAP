@@ -39,12 +39,12 @@ const emit = defineEmits(['update:modelValue', 'toggle-theme', 'logout']);
 
 const navItems = [
   { icon: '📁', label: 'Dashboard' },
-  { icon: '🏠', label: 'Home' },
   { icon: '🚛', label: 'Fleet' },
   { icon: '📍', label: 'Routes' },
   { icon: '📊', label: 'Analytics' },
   { icon: '💰', label: 'Revenue' },
 ];
+
 </script>
 
 <style scoped>

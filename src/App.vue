@@ -16,6 +16,9 @@ import LoginView from './components/LoginView.vue'
 import DriverView from './components/DriverView.vue'
 import MiniRoutes from './components/MiniRoutes.vue'
 import MiniAnalytics from './components/MiniAnalytics.vue'
+import PredictiveRisk from './components/PredictiveRisk.vue'
+import ESGTracker from './components/ESGTracker.vue'
+import RegionalThroughput from './components/RegionalThroughput.vue'
 import ParcelService from './services/ParcelService'
 import WebSocketService from './services/WebSocketService'
 
@@ -114,7 +117,7 @@ onMounted(() => {
         
         <Transition name="fade" mode="out-in">
           <div :key="activeTab" class="view-wrapper">
-            <div v-if="activeTab === 0 || activeTab === 1" class="dashboard-grid">
+            <div v-if="activeTab === 0" class="dashboard-grid">
               <!-- Row 1: Stats -->
               <div class="grid-col-3">
                 <StatsCard label="Total Active Shipments" value="275" trendValue="+6.3" trendDirection="up" color="#3b82f6">
@@ -154,37 +157,40 @@ onMounted(() => {
               </div>
 
               <!-- Row 4: Advanced Integrated Widgets -->
-              <div class="grid-col-6">
-                <MiniAnalytics />
+              <div class="grid-col-4">
+                <PredictiveRisk />
               </div>
-              <div class="grid-col-6">
-                <MiniRoutes />
+              <div class="grid-col-4">
+                <ESGTracker />
+              </div>
+              <div class="grid-col-4">
+                <RegionalThroughput />
               </div>
             </div>
 
-            <div v-else-if="activeTab === 2" class="fleet-content">
+            <div v-else-if="activeTab === 1" class="fleet-content">
               <FleetView />
             </div>
 
-            <div v-else-if="activeTab === 3" class="routes-content">
+            <div v-else-if="activeTab === 2" class="routes-content">
               <RoutesView />
             </div>
 
-            <div v-else-if="activeTab === 4" class="analytics-content">
+            <div v-else-if="activeTab === 3" class="analytics-content">
               <AnalyticsView />
             </div>
 
-            <div v-else-if="activeTab === 5" class="revenue-content">
+            <div v-else-if="activeTab === 4" class="revenue-content">
               <RevenueView />
             </div>
 
-            <div v-else-if="activeTab === 6" class="settings-content">
+            <div v-else-if="activeTab === 5" class="settings-content">
               <SettingsView />
             </div>
 
             <div v-else class="coming-soon">
               <div class="glass-panel">
-                <h2>{{ ['Dashboard', 'Home', 'Fleet', 'Routes', 'Analytics', 'Revenue', 'Settings'][activeTab] }} Module</h2>
+                <h2>{{ ['Dashboard', 'Fleet', 'Routes', 'Analytics', 'Revenue', 'Settings'][activeTab] || 'Unknown' }} Module</h2>
                 <p>Real-time data for this section is currently being synced from the cloud.</p>
                 <button @click="activeTab = 0" class="back-btn">Return to Dashboard</button>
               </div>

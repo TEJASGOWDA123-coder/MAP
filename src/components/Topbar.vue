@@ -1,15 +1,26 @@
 <script setup>
-import { computed } from 'vue';
+import { ref, onMounted, onUnmounted } from 'vue';
 defineEmits(['show-notifications', 'show-profile']);
 
-const formattedDate = computed(() => {
+const formattedDate = ref('');
+
+const updateTime = () => {
   const now = new Date();
-  const options = { day: '2-digit', month: 'short', year: 'numeric' };
-  const dateStr = now.toLocaleDateString('en-GB', options);
-  // dateStr is like "12 Apr 2026"
-  // We want "Today, 12 Apr, 2026"
+  const options = { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' };
+  const dateStr = now.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+  const timeStr = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
   const parts = dateStr.split(' ');
-  return `Today, ${parts[0]} ${parts[1]}, ${parts[2]}`;
+  formattedDate.value = `Today, ${parts[0]} ${parts[1]}, ${parts[2]} \u00B7 ${timeStr}`;
+};
+
+let timer;
+onMounted(() => {
+  updateTime();
+  timer = setInterval(updateTime, 1000);
+});
+
+onUnmounted(() => {
+  clearInterval(timer);
 });
 </script>
 

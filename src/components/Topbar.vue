@@ -118,4 +118,19 @@ onUnmounted(() => {
   border-radius: 12px;
   border: 2px solid var(--accent-primary);
 }
+
+@media (max-width: 768px) {
+  .topbar {
+    width: 100%;
+    margin-left: 0;
+    padding: 12px 20px;
+    height: auto;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .welcome h1 { font-size: 1.2rem; }
+  .welcome p { font-size: 0.8rem; }
+  .search-box { display: none; }
+  .date-picker { display: none; }
+}
 </style>

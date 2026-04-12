@@ -391,4 +391,12 @@ const openLog = (route) => {
 .map-btn { background: var(--accent-primary); color: white; border: none; }
 
 .map-btn:hover { opacity: 0.9; transform: translateY(-2px); }
+
+@media (max-width: 768px) {
+  .routes-view { padding: 20px; }
+  .routes-layout { grid-template-columns: 1fr; }
+  .routes-grid { grid-template-columns: 1fr; }
+  .header { flex-direction: column; align-items: flex-start; gap: 16px; }
+  .filter-tabs { flex-wrap: wrap; }
+}
 </style>

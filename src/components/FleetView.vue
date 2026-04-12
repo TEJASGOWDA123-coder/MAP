@@ -387,4 +387,11 @@ const getFuelColor = (fuel) => {
   filter: brightness(1.1);
   transform: translateY(-2px);
 }
+
+@media (max-width: 768px) {
+  .fleet-view { padding: 20px; }
+  .header { flex-direction: column; align-items: flex-start; gap: 16px; }
+  .stats-grid { grid-template-columns: 1fr; }
+  .fleet-grid { grid-template-columns: 1fr; }
+}
 </style>

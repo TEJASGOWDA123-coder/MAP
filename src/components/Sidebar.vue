@@ -105,4 +105,23 @@ const navItems = [
   gap: 16px;
   margin-top: auto;
 }
+
+@media (max-width: 768px) {
+  .sidebar {
+    width: 100%;
+    height: 70px;
+    margin: 0;
+    flex-direction: row;
+    bottom: 0;
+    top: auto;
+    padding: 0 10px;
+    justify-content: space-between;
+    border-radius: 20px 20px 0 0;
+    box-shadow: 0 -4px 20px rgba(0,0,0,0.1);
+  }
+  .logo { display: none; }
+  .nav-links { flex-direction: row; gap: 4px; justify-content: center; align-items: center; flex: 1; }
+  .nav-item { width: 44px; height: 44px; font-size: 1.1rem; }
+  .bottom-actions { flex-direction: row; gap: 8px; margin-top: 0; align-items: center; justify-content: center; }
+}
 </style>

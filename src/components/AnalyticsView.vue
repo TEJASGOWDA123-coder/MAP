@@ -354,4 +354,10 @@ const modes = [
   .secondary-grid { grid-template-columns: 1fr; }
   .highlights-grid { grid-template-columns: 1fr; }
 }
+
+@media (max-width: 768px) {
+  .analytics-view { padding: 20px; }
+  .header { flex-direction: column; align-items: flex-start; gap: 16px; }
+  .time-filter { width: 100%; justify-content: space-between; overflow-x: auto; }
+}
 </style>

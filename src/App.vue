@@ -341,4 +341,25 @@ onMounted(() => {
   .grid-col-4 { grid-column: span 6; }
   .grid-col-8 { grid-column: span 6; }
 }
+
+@media (max-width: 768px) {
+  .main-content {
+    padding-left: 0;
+    padding-bottom: 70px; /* Space for bottom nav */
+  }
+  
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+    padding: 20px;
+    gap: 16px;
+  }
+  
+  .grid-col-3, .grid-col-4, .grid-col-6, .grid-col-8 { 
+    grid-column: span 1; 
+  }
+  
+  .grid-row-span-2 { 
+    grid-row: span 1; 
+  }
+}
 </style>

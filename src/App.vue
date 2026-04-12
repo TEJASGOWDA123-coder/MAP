@@ -169,11 +169,11 @@ onMounted(() => {
             </div>
 
             <div v-else-if="activeTab === 1" class="fleet-content">
-              <FleetView />
+              <FleetView @view-route="activeTab = 2" />
             </div>
 
             <div v-else-if="activeTab === 2" class="routes-content">
-              <RoutesView />
+              <RoutesView @live-track="activeTab = 0" />
             </div>
 
             <div v-else-if="activeTab === 3" class="analytics-content">

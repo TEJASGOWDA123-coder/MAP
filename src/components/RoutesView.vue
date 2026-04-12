@@ -67,10 +67,37 @@
           </div>
 
           <div class="footer-actions">
-             <button class="expand-btn">View Full Log</button>
-             <button class="map-btn">📍 Live Track</button>
+             <button class="expand-btn" @click="openLog(route)">View Full Log</button>
+             <button class="map-btn" @click="$emit('live-track', route.id)">📍 Live Track</button>
           </div>
         </div>
+      </div>
+    </div>
+
+    <!-- Full Log Modal -->
+    <div v-if="showLogModal && selectedRouteForLog" class="modal-overlay" @click="showLogModal = false">
+      <div class="modal-content glass-panel" @click.stop>
+        <h3>Full Log for Route #{{ selectedRouteForLog.id }}</h3>
+        <p><strong>Status:</strong> <span :class="selectedRouteForLog.status.toLowerCase()">{{ selectedRouteForLog.status }}</span></p>
+        <p><strong>Path:</strong> {{ selectedRouteForLog.from }} → {{ selectedRouteForLog.to }}</p>
+        <p><strong>Load:</strong> {{ selectedRouteForLog.load }}%</p>
+        <p><strong>Delay:</strong> {{ selectedRouteForLog.delay }}m</p>
+        <br/>
+        <div class="log-entries">
+           <div class="log-entry info">
+              <span class="time">10:00 AM</span>
+              <p>Departed from {{ selectedRouteForLog.from }}</p>
+           </div>
+           <div v-if="selectedRouteForLog.delay > 0" class="log-entry warning">
+              <span class="time">10:15 AM</span>
+              <p>Delay detected due to traffic/congestion.</p>
+           </div>
+           <div class="log-entry success" v-if="selectedRouteForLog.status === 'Optimal'">
+              <span class="time">10:30 AM</span>
+              <p>Maintaining optimal speed and route.</p>
+           </div>
+        </div>
+        <button class="close-btn" @click="showLogModal = false" style="margin-top: 20px; width: 100%; padding: 10px; background: var(--bg-tertiary); color: var(--text-primary); border-radius: 8px; border: none; cursor: pointer;">Close</button>
       </div>
     </div>
   </div>
@@ -79,6 +106,8 @@
 <script setup>
 import { ref, computed } from 'vue';
 
+const emit = defineEmits(['live-track']);
+
 const optimizationLog = ref([
   { id: 1, time: '10:25 AM', event: 'Route RT-882 re-optimized: Traffic avoided', type: 'info' },
   { id: 2, time: '10:14 AM', event: 'Delay detected on RT-910: Estimating alt path', type: 'warning' },
@@ -86,6 +115,8 @@ const optimizationLog = ref([
 ]);
 
 const selectedFilter = ref('all');
+const showLogModal = ref(false);
+const selectedRouteForLog = ref(null);
 
 const routes = ref([
   { id: 'RT-882', from: 'Bangalore East', to: 'Whitefield', status: 'Optimal', distance: 12.5, load: 85, progress: 65, delay: 0, type: 'domestic' },
@@ -99,6 +130,11 @@ const filteredRoutes = computed(() => {
   if (selectedFilter.value === 'all') return routes.value;
   return routes.value.filter(r => r.type === selectedFilter.value);
 });
+
+const openLog = (route) => {
+  selectedRouteForLog.value = route;
+  showLogModal.value = true;
+};
 </script>
 
 <style scoped>
@@ -106,6 +142,35 @@ const filteredRoutes = computed(() => {
   padding: 40px;
   max-width: 1400px;
   margin: 0 auto;
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0,0,0,0.5);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  padding: 40px;
+  width: 500px;
+  max-width: 90vw;
+}
+
+.modal-content h3 {
+  margin-bottom: 20px;
+  color: var(--accent-secondary);
+}
+
+.modal-content strong {
+  margin-right: 8px;
 }
 
 .header {

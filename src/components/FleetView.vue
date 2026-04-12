@@ -93,7 +93,7 @@
           </div>
         </div>
 
-        <button class="view-btn">View Route</button>
+        <button class="view-btn" @click="$emit('view-route')">View Route</button>
       </div>
     </div>
   </div>
@@ -101,6 +101,7 @@
 
 <script setup>
 import { ref } from 'vue';
+defineEmits(['view-route']);
 
 const showAddModal = ref(false);
 const newVehicle = ref({

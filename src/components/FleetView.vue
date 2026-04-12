@@ -6,7 +6,37 @@
         <p class="subtitle">Real-time status and health monitoring for all active vehicles</p>
       </div>
       <div class="actions">
-        <button class="add-btn">+ Add Vehicle</button>
+        <button class="add-btn" @click="showAddModal = true">+ Add Vehicle</button>
+      </div>
+    </div>
+
+    <!-- Add Vehicle Modal -->
+    <div v-if="showAddModal" class="modal-overlay" @click="showAddModal = false">
+      <div class="modal-content glass-panel" @click.stop>
+        <h3>Add New Vehicle</h3>
+        <form @submit.prevent="addVehicle" class="add-form">
+          <div class="input-group">
+            <label>Vehicle ID</label>
+            <input v-model="newVehicle.id" type="text" placeholder="e.g. V-103" required />
+          </div>
+          <div class="input-group">
+            <label>Driver Name</label>
+            <input v-model="newVehicle.driver" type="text" placeholder="Enter driver name" required />
+          </div>
+          <div class="input-group">
+            <label>Vehicle Type</label>
+            <select v-model="newVehicle.type">
+              <option>Heavy Truck</option>
+              <option>Delivery Van</option>
+              <option>Container Truck</option>
+              <option>Cargo Plane</option>
+            </select>
+          </div>
+          <div class="modal-actions">
+            <button type="button" class="cancel-btn" @click="showAddModal = false">Cancel</button>
+            <button type="submit" class="confirm-btn">Add Vehicle</button>
+          </div>
+        </form>
       </div>
     </div>
 
@@ -70,14 +100,43 @@
 </template>
 
 <script setup>
-const fleet = [
+import { ref } from 'vue';
+
+const showAddModal = ref(false);
+const newVehicle = ref({
+  id: '',
+  type: 'Heavy Truck',
+  driver: '',
+  status: 'Active',
+  fuel: 100,
+  location: 'Main Hub'
+});
+
+const fleet = ref([
   { id: 'V-001', type: 'Heavy Truck', driver: 'John Doe', status: 'Active', fuel: 85, location: 'Bangalore East' },
   { id: 'V-002', type: 'Delivery Van', driver: 'Jane Smith', status: 'Active', fuel: 45, location: 'City Center' },
   { id: 'V-003', type: 'Container Truck', driver: 'Mike Ross', status: 'Idle', fuel: 90, location: 'Main Hub' },
   { id: 'V-004', type: 'Heavy Truck', driver: 'Sarah Connor', status: 'Maintenance', fuel: 12, location: 'Service Center' },
   { id: 'V-005', type: 'Delivery Van', driver: 'Alex Hunt', status: 'Active', fuel: 60, location: 'Whitefield' },
   { id: 'V-102', type: 'Cargo Plane', driver: 'Capt. Rogers', status: 'Active', fuel: 100, location: 'Intl Airport' }
-];
+]);
+
+const addVehicle = () => {
+  if (!newVehicle.value.id || !newVehicle.value.driver) return;
+  
+  fleet.value.unshift({ ...newVehicle.value });
+  showAddModal.value = false;
+  
+  // Reset form
+  newVehicle.value = {
+    id: '',
+    type: 'Heavy Truck',
+    driver: '',
+    status: 'Active',
+    fuel: 100,
+    location: 'Main Hub'
+  };
+};
 
 const getVehicleIcon = (type) => {
   if (type.includes('Truck')) return '🚛';
@@ -242,4 +301,89 @@ const getFuelColor = (fuel) => {
 }
 
 .view-btn:hover { background: var(--accent-primary); color: white; border-color: transparent; }
+
+/* Modal Styles */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  width: 100%;
+  max-width: 450px;
+  padding: 40px;
+}
+
+.modal-content h3 {
+  margin-bottom: 24px;
+  font-size: 1.5rem;
+  color: var(--accent-primary);
+}
+
+.add-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.input-group label {
+  font-size: 0.85rem;
+  color: var(--text-tertiary);
+}
+
+.input-group input, .input-group select {
+  background: var(--bg-tertiary);
+  border: 1px solid var(--glass-border);
+  padding: 12px;
+  border-radius: 10px;
+  color: var(--text-primary);
+  outline: none;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 10px;
+}
+
+.cancel-btn, .confirm-btn {
+  flex: 1;
+  padding: 12px;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.cancel-btn {
+  background: transparent;
+  border: 1px solid var(--glass-border);
+  color: var(--text-secondary);
+}
+
+.confirm-btn {
+  background: var(--accent-primary);
+  border: none;
+  color: white;
+}
+
+.confirm-btn:hover {
+  filter: brightness(1.1);
+  transform: translateY(-2px);
+}
 </style>

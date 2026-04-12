@@ -26,8 +26,8 @@
       <div class="nav-item" @click="$emit('toggle-theme')">
         <span class="icon">{{ isDark ? '☀️' : '🌙' }}</span>
       </div>
-      <div class="nav-item" @click="$emit('update:modelValue', 6)">
-        <span class="icon">⚙️</span>
+      <div class="nav-item" @click="$emit('logout')">
+        <span class="icon">🚪</span>
       </div>
     </div>
   </aside>
@@ -35,7 +35,7 @@
 
 <script setup>
 const props = defineProps(['modelValue', 'isDark']);
-const emit = defineEmits(['update:modelValue', 'toggle-theme']);
+const emit = defineEmits(['update:modelValue', 'toggle-theme', 'logout']);
 
 const navItems = [
   { icon: '📁', label: 'Dashboard' },
@@ -87,14 +87,16 @@ const navItems = [
 }
 
 .nav-item:hover {
-  background: var(--glass-bg);
+  background: var(--glass-bg-hover, rgba(255, 255, 255, 0.08));
   color: var(--text-primary);
+  transform: scale(1.05);
 }
 
 .nav-item.active {
   background: var(--accent-primary);
   color: white;
-  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+  box-shadow: 0 4px 20px rgba(59, 130, 246, 0.5);
+  transform: scale(1.1);
 }
 
 .bottom-actions {

@@ -6,60 +6,70 @@
         <p class="subtitle">Real-time path optimization and delay monitoring</p>
       </div>
       <div class="filter-tabs glass-panel">
-        <span class="active">All Routes</span>
-        <span>Domestic</span>
-        <span>International</span>
+        <span :class="{ active: selectedFilter === 'all' }" @click="selectedFilter = 'all'">All Routes</span>
+        <span :class="{ active: selectedFilter === 'domestic' }" @click="selectedFilter = 'domestic'">Domestic</span>
+        <span :class="{ active: selectedFilter === 'international' }" @click="selectedFilter = 'international'">International</span>
       </div>
     </div>
 
     <div class="routes-layout">
-      <div v-for="route in routes" :key="route.id" class="route-card glass-panel">
-        <div class="route-header">
-          <div class="route-id-group">
-            <span class="id-tag">Route #{{ route.id }}</span>
-            <span class="status-indicator" :class="route.status.toLowerCase()">
-              {{ route.status }}
-            </span>
-          </div>
-          <div class="priority-flag" v-if="route.load > 90">🔥 High Priority</div>
+      <!-- Live Optimization Side Panel -->
+      <div class="optimization-panel glass-panel">
+        <div class="panel-header">
+          <h3>Live Optimization Log</h3>
+          <span class="live-tag">LIVE</span>
         </div>
+        <div class="log-entries">
+          <div v-for="log in optimizationLog" :key="log.id" class="log-entry" :class="log.type">
+            <span class="time">{{ log.time }}</span>
+            <p>{{ log.event }}</p>
+          </div>
+        </div>
+        <button class="optimize-now-btn">Run AI Re-optimization</button>
+      </div>
 
-        <div class="tracking-visual">
-          <div class="track-line">
-            <div class="start-node"></div>
-            <div class="current-progress" :style="{ width: route.progress + '%' }">
-              <div class="vehicle-marker">🚛</div>
+      <div class="routes-grid">
+        <div v-for="route in filteredRoutes" :key="route.id" class="route-card glass-panel">
+          <div class="route-header">
+            <div class="route-id-group">
+              <span class="id-tag">Route #{{ route.id }}</span>
+              <span class="status-indicator" :class="route.status.toLowerCase()">
+                {{ route.status }}
+              </span>
             </div>
-            <div class="end-node"></div>
+            <div class="delay-tag" v-if="route.delay > 0">+{{ route.delay }}m Delay</div>
+            <div class="priority-flag" v-else-if="route.load > 90">🔥 High Priority</div>
           </div>
-          <div class="cities">
-            <span class="city">{{ route.from }}</span>
-            <span class="city">{{ route.to }}</span>
-          </div>
-        </div>
 
-        <div class="route-grid">
-          <div class="metric-box">
-            <span class="m-lbl">Distance Remaining</span>
-            <span class="m-val">{{ (route.distance * (1 - route.progress/100)).toFixed(1) }} km</span>
+          <div class="tracking-visual">
+            <div class="track-line">
+              <div class="start-node"></div>
+              <div class="current-progress" :style="{ width: route.progress + '%' }">
+                <div class="vehicle-marker">🚛</div>
+              </div>
+              <div class="end-node"></div>
+            </div>
+            <div class="cities">
+              <span class="city">{{ route.from }}</span>
+              <span class="city">{{ route.to }}</span>
+            </div>
           </div>
-          <div class="metric-box">
-            <span class="m-lbl">Current Load</span>
-            <span class="m-val">{{ route.load }}%</span>
-          </div>
-          <div class="metric-box">
-            <span class="m-lbl">Estimated Arrival</span>
-            <span class="m-val">14:45 PM</span>
-          </div>
-          <div class="metric-box">
-            <span class="m-lbl">Vibration Index</span>
-            <span class="m-val">Normal</span>
-          </div>
-        </div>
 
-        <div class="footer-actions">
-           <button class="expand-btn">View Full Log</button>
-           <button class="map-btn">📍 Track Lite</button>
+          <div class="route-grid-metrics">
+            <div class="metric-box">
+              <span class="m-lbl">Distance Remaining</span>
+              <span class="m-val">{{ (route.distance * (1 - route.progress/100)).toFixed(1) }} km</span>
+            </div>
+            <div class="metric-box">
+              <span class="m-lbl">Current Load</span>
+              <span class="m-val">{{ route.load }}%</span>
+            </div>
+          </div>
+
+          <div class="footer-actions">
+             <button class="expand-btn">View Full Log</button>
+             <button class="map-btn">📍 Live Track</button>
+          </div>
         </div>
       </div>
     </div>
@@ -67,13 +77,28 @@
 </template>
 
 <script setup>
-const routes = [
-  { id: 'RT-882', from: 'Bangalore East', to: 'Whitefield', status: 'Optimal', distance: 12.5, load: 85, progress: 65 },
-  { id: 'RT-910', from: 'Electronic City', to: 'Indiranagar', status: 'Delayed', distance: 24.2, load: 42, progress: 30 },
-  { id: 'RT-743', from: 'Hebbal', to: 'Koramangala', status: 'Congested', distance: 18.7, load: 95, progress: 85 },
-  { id: 'RT-221', from: 'DC Main Hub', to: 'Airport', status: 'Optimal', distance: 35.0, load: 60, progress: 45 },
-  { id: 'RT-556', from: 'Mysore Road', to: 'Yeshwanthpur', status: 'Optimal', distance: 22.1, load: 70, progress: 15 }
-];
+import { ref, computed } from 'vue';
+
+const optimizationLog = ref([
+  { id: 1, time: '10:25 AM', event: 'Route RT-882 re-optimized: Traffic avoided', type: 'info' },
+  { id: 2, time: '10:14 AM', event: 'Delay detected on RT-910: Estimating alt path', type: 'warning' },
+  { id: 3, time: '09:45 AM', event: 'RT-743 fuel priority established', type: 'success' },
+]);
+
+const selectedFilter = ref('all');
+
+const routes = ref([
+  { id: 'RT-882', from: 'Bangalore East', to: 'Whitefield', status: 'Optimal', distance: 12.5, load: 85, progress: 65, delay: 0, type: 'domestic' },
+  { id: 'RT-910', from: 'Electronic City', to: 'Indiranagar', status: 'Delayed', distance: 24.2, load: 42, progress: 30, delay: 15, type: 'domestic' },
+  { id: 'RT-743', from: 'Hebbal', to: 'Koramangala', status: 'Congested', distance: 18.7, load: 95, progress: 85, delay: 8, type: 'domestic' },
+  { id: 'RT-221', from: 'DC Main Hub', to: 'Airport', status: 'Optimal', distance: 35.0, load: 60, progress: 45, delay: 0, type: 'international' },
+  { id: 'RT-556', from: 'Mysore Road', to: 'Yeshwanthpur', status: 'Optimal', distance: 22.1, load: 70, progress: 15, delay: 0, type: 'domestic' }
+]);
+
+const filteredRoutes = computed(() => {
+  if (selectedFilter.value === 'all') return routes.value;
+  return routes.value.filter(r => r.type === selectedFilter.value);
+});
 </script>
 
 <style scoped>
@@ -111,6 +136,78 @@ const routes = [
 
 .routes-layout {
   display: grid;
+  grid-template-columns: 350px 1fr;
+  gap: 24px;
+}
+
+.optimization-panel {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  height: fit-content;
+  position: sticky;
+  top: 20px;
+}
+
+.panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.live-tag {
+  background: rgba(239, 68, 68, 0.1);
+  color: #ef4444;
+  padding: 2px 8px;
+  border-radius: 6px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% { opacity: 1; }
+  50% { opacity: 0.5; }
+  100% { opacity: 1; }
+}
+
+.log-entries {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.log-entry {
+  padding: 12px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.02);
+  border-left: 3px solid transparent;
+}
+
+.log-entry.info { border-left-color: var(--accent-primary); }
+.log-entry.warning { border-left-color: var(--warning); }
+.log-entry.success { border-left-color: var(--success); }
+
+.log-entry .time { font-size: 0.7rem; color: var(--text-tertiary); display: block; margin-bottom: 4px; }
+.log-entry p { font-size: 0.8rem; line-height: 1.4; color: var(--text-secondary); }
+
+.optimize-now-btn {
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+  border: 1px solid var(--glass-border);
+  padding: 12px;
+  border-radius: 10px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.optimize-now-btn:hover { background: var(--accent-primary); color: white; border-color: transparent; }
+
+.routes-grid {
+  display: grid;
   grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
   gap: 24px;
 }
@@ -133,6 +230,7 @@ const routes = [
 
 .id-tag { font-weight: 700; color: var(--accent-secondary); font-size: 0.9rem; }
 .priority-flag { font-size: 0.75rem; color: #ef4444; font-weight: 700; background: rgba(239, 68, 68, 0.1); padding: 4px 10px; border-radius: 8px; }
+.delay-tag { font-size: 0.75rem; color: #ef4444; font-weight: 700; background: rgba(239, 68, 68, 0.1); padding: 4px 10px; border-radius: 8px; }
 
 .status-indicator {
   font-size: 0.7rem;
@@ -191,7 +289,7 @@ const routes = [
 .cities { display: flex; justify-content: space-between; }
 .city { font-size: 0.8rem; font-weight: 600; color: var(--text-secondary); }
 
-.route-grid {
+.route-grid-metrics {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 16px;

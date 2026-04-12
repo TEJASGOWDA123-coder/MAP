@@ -2,6 +2,8 @@
 import { ref, onMounted, onUnmounted } from 'vue'
 import WebSocketService from '../services/WebSocketService'
 
+const emit = defineEmits(['logout'])
+
 const parcelIds = ['P001', 'P002', 'P003']
 const parcelId = ref('P001')
 const location = ref({ lat: 0, lng: 0 })
@@ -75,8 +77,11 @@ const handleMouseUp = () => {
 <template>
   <div class="driver-view">
     <div class="mobile-card">
-      <div class="status-badge" :class="{ 'live': status === 'On Route (Live)', 'delivered': status === 'DELIVERED' }">
-        {{ status }}
+      <div class="top-row">
+        <div class="status-badge" :class="{ 'live': status === 'On Route (Live)', 'delivered': status === 'DELIVERED' }">
+          {{ status }}
+        </div>
+        <button class="logout-btn" @click="$emit('logout')">Logout</button>
       </div>
       
       <div v-if="status !== 'DELIVERED' && !isSigning" class="parcel-selector">
@@ -147,7 +152,30 @@ const handleMouseUp = () => {
   background: #bdc3c7;
   color: white;
   font-weight: 600;
+}
+
+.top-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   margin-bottom: 20px;
+}
+
+.logout-btn {
+  background: transparent;
+  border: 1px solid #edf2f4;
+  color: #95a5a6;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.logout-btn:hover {
+  background: #fdf2f2;
+  color: #e74c3c;
+  border-color: #e74c3c;
 }
 
 .status-badge.live {
